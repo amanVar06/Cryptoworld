@@ -10,6 +10,30 @@ import {
 } from "@ant-design/icons";
 
 import icon from "../Images/cryptocurrency.png";
+
+// const menuItems = [
+//   {
+//     key: "Home",
+//     icon: <HomeOutlined />,
+//     childern: [<Link to="/">Home</Link>],
+//   },
+//   {
+//     key: "Cryptocurrencies",
+//     icon: <FundOutlined />,
+//     childern: [<Link to="/cryptocurrencies">Cryptocurrencies</Link>],
+//   },
+//   {
+//     key: "Exchanges",
+//     icon: <MoneyCollectOutlined />,
+//     childern: [<Link to="/exchanges">Exchanges</Link>],
+//   },
+//   {
+//     key: "News",
+//     icon: <BulbOutlined />,
+//     childern: [<Link to="/news">News</Link>],
+//   },
+// ];
+
 const Navbar = () => {
   return (
     <div className="nav-container">
