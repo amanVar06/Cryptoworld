@@ -16,7 +16,7 @@ import {
   NumberOutlined,
   ThunderboltOutlined,
 } from "@ant-design/icons";
-// import LineChart from "./LineChart";
+import LineChart from "./LineChart";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -24,7 +24,8 @@ const { Option } = Select;
 const CryptoDetails = () => {
   const { coinId } = useParams();
   const [timePeriod, setTimePeriod] = useState("7d");
-  const [cryptoDetails, setcryptoDetails] = useState();
+  const [cryptoDetails, setcryptoDetails] = useState(null);
+  const [coinHistory, setCoinHistory] = useState(null);
 
   const fetchCryptoDetails = async (coinId) => {
     const data = await axios
@@ -50,14 +51,49 @@ const CryptoDetails = () => {
     return data;
   };
 
+  const fetchCoinHistory = async (coinId, timeperiod) => {
+    const data = await axios
+      .request({
+        method: "GET",
+        url: `https://coinranking1.p.rapidapi.com/coin/${coinId}/history`,
+        params: {
+          referenceCurrencyUuid: "yhjMzLPhuIDl",
+          timePeriod: timeperiod,
+        },
+        headers: {
+          "X-RapidAPI-Key":
+            "e859b2517amsh47321229900d36ep1230fdjsnb8729fc29a51",
+          "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
+        },
+      })
+      .then(function (response) {
+        // console.log(response);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+    return data;
+  };
+
   useEffect(() => {
     fetchCryptoDetails(coinId).then((data) => {
       // console.log(data);
       setcryptoDetails(data?.data?.coin);
     });
-  }, []);
+
+    fetchCoinHistory(coinId, timePeriod).then((data) => {
+      // console.log(data);
+      setCoinHistory(data);
+    });
+  }, [cryptoDetails, setcryptoDetails, coinHistory, setCoinHistory]);
 
   // console.log(cryptoDetails);
+  // console.log(cryptoDetails.price);
+  // console.log(typeof cryptoDetails.price);
+
+  // console.log(coinHistory);
 
   const time = ["3h", "24h", "7d", "30d", "1y", "3m", "3y", "5y"];
 
@@ -152,6 +188,12 @@ const CryptoDetails = () => {
         ))}
       </Select>
 
+      <LineChart
+        coinHistory={coinHistory}
+        currentPrice={millify(cryptoDetails?.price ? cryptoDetails?.price : 0)}
+        coinName={cryptoDetails?.name}
+      />
+
       <Col className="stats-container">
         <Col className="coin-value-statistics">
           <Col className="coin-value-statistics-heading">
@@ -195,7 +237,9 @@ const CryptoDetails = () => {
         <Row className="coin-desc">
           <Title level={3} className="coin-details-heading">
             What is {cryptoDetails?.name}
-            {HTMLReactParser(cryptoDetails?.description)}
+            {HTMLReactParser(
+              cryptoDetails?.description ? cryptoDetails?.description : ""
+            )}
           </Title>
         </Row>
 
