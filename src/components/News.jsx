@@ -1,114 +1,61 @@
-// import { useGetCryptoNewsQuery } from "../services/cryptoNewsApi";
-
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { Select, Typography, Row, Col, Avatar, Card } from "antd";
 import moment from "moment";
+
+import { useGetCryptosQuery } from "../services/cryptoApi";
+import { useGetCryptoNewsQuery } from "../services/cryptoNewsApi";
+import Loader from "./Loader";
+
+const demoImage = "https://via.placeholder.com/150";
+// "https://www.bing.com/th?id=OVFT.mpzuVZnv8dwIMRfQGPbOPC&pid=News";
 
 const { Text, Title } = Typography;
 const { Option } = Select;
 
-const demoImage =
-  "https://www.bing.com/th?id=OVFT.mpzuVZnv8dwIMRfQGPbOPC&pid=News";
-
-// const options = {
-//   method: "GET",
-//   url: "https://bing-news-search1.p.rapidapi.com/news/search",
-//   params: {
-//     q: "Cryptocurrency",
-//     freshness: "Day",
-//     textFormat: "Raw",
-//     safeSearch: "Off",
-//   },
-//   headers: {
-//     "X-BingApis-SDK": "true",
-//     "X-RapidAPI-Key": "e859b2517amsh47321229900d36ep1230fdjsnb8729fc29a51",
-//     "X-RapidAPI-Host": "bing-news-search1.p.rapidapi.com",
-//   },
-// };
-
-//limit could be changed to 100 here
-const optionsCoins = {
-  method: "GET",
-  url: "https://coinranking1.p.rapidapi.com/coins",
-  params: {
-    referenceCurrencyUuid: "yhjMzLPhuIDl",
-    timePeriod: "24h",
-    "tiers[0]": "1",
-    orderBy: "marketCap",
-    orderDirection: "desc",
-    limit: "50",
-    offset: "0",
-  },
-  headers: {
-    "X-RapidAPI-Key": "e859b2517amsh47321229900d36ep1230fdjsnb8729fc29a51",
-    "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
-  },
-};
-
 const News = ({ simplified }) => {
-  const [cryptoNews, setCryptoNews] = useState([]);
-  const [cryptos, setCryptos] = useState([]);
   const [newsCategory, setNewsCategory] = useState("Cryptocurrency");
-  // const { data: cryptoNews } = useGetCryptoNewsQuery({
-  //   newsCategory: "Cryptocurrency",
-  //   count: simplified ? 10 : 100,
-  // });
-  const number = simplified ? 6 : 12;
-  const fetchData = async (newsCategory, count) => {
-    const data = await axios
-      .request({
-        method: "GET",
-        url: `https://bing-news-search1.p.rapidapi.com/news/search?q=${newsCategory}&safeSearch=Off&textFormat=Raw&freshness=Day&count=${count}`,
-        // params: {
-        //   q: { newsCategory },
-        //   freshness: "Day",
-        //   textFormat: "Raw",
-        //   safeSearch: "Off",
-        //   count: { count },
-        // },
-        headers: {
-          "X-BingApis-SDK": "true",
-          "X-RapidAPI-Key":
-            "e859b2517amsh47321229900d36ep1230fdjsnb8729fc29a51",
-          "X-RapidAPI-Host": "bing-news-search1.p.rapidapi.com",
-        },
-      })
-      .then(function (response) {
-        return response.data;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+  const { data } = useGetCryptosQuery(100);
+  // const [cryptoNews, setCryptoNews] = useState([]);
+  const { data: cryptoNews } = useGetCryptoNewsQuery({
+    newsCategory,
+    count: simplified ? 6 : 12,
+  });
 
-    return data;
-  };
+  if (!cryptoNews?.value) return <Loader />;
 
-  useEffect(() => {
-    // fetchData().then((data) => {
-    //   console.log(data);
-    // });
-    axios
-      .request(optionsCoins)
-      .then(function (response) {
-        // console.log(response.data?.data?.coins);
-        setCryptos(response.data?.data?.coins);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+  // const count = simplified ? 6 : 12;
+  const cryptos = data?.data?.coins;
 
-    fetchData(newsCategory, number).then((data) => {
-      // console.log(data);
-      setCryptoNews(data);
-    });
-  }, []);
+  // const fetchData = async (newsCategory, count) => {
+  //   const data = await axios
+  //     .request({
+  //       method: "GET",
+  //       url: `https://bing-news-search1.p.rapidapi.com/news/search?q=${newsCategory}&safeSearch=Off&textFormat=Raw&freshness=Day&count=${count}`,
+  //       headers: {
+  //         "X-BingApis-SDK": "true",
+  //         "X-RapidAPI-Key":
+  //           "e859b2517amsh47321229900d36ep1230fdjsnb8729fc29a51",
+  //         "X-RapidAPI-Host": "bing-news-search1.p.rapidapi.com",
+  //       },
+  //     })
+  //     .then(function (response) {
+  //       return response.data;
+  //     })
+  //     .catch(function (error) {
+  //       console.error(error);
+  //     });
 
-  // fetchData("Cryptocurrency", number).then((data) => {
-  //   console.log(data);
-  // });
+  //   return data;
+  // };
 
-  // console.log(cryptoNews);
+  // useEffect(() => {
+  //   fetchData(newsCategory, count).then((data) => {
+  //     setCryptoNews(data);
+  //   });
+  // }, []);
+
+  // if (!cryptoNews?.value) return <Loader />;
 
   return (
     <Row gutter={[24, 24]}>
@@ -126,7 +73,9 @@ const News = ({ simplified }) => {
           >
             <Option value="Cryptocurrency">Cryptocurrency</Option>
             {cryptos?.map((coin) => (
-              <Option value={coin.name}>{coin.name}</Option>
+              <Option key={coin.name} value={coin.name}>
+                {coin.name}
+              </Option>
             ))}
           </Select>
         </Col>
