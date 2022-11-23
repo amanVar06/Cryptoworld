@@ -11,6 +11,10 @@ import {
 
 import icon from "../Images/cryptocurrency.png";
 
+//visit this for cryto logo
+/*
+https://www.google.com/search?rlz=1C1VDKB_enIN977IN977&sxsrf=ALiCzsbBG5MUnPYvcf81dXQcDBLjKAQc5w:1660454651841&q=crypto+logo&tbm=isch&chips=q:crypto+logo,g_1:cryptocurrency:mGVivQzmKR8%3D&usg=AI4_-kRPMFMmybLI2Pz1flTPRnL1Yy-9pQ&sa=X&ved=2ahUKEwjQ38DNy8X5AhUbZt4KHSMsDPMQgIoDKAJ6BAgCEBE&biw=767&bih=712&dpr=1.25#imgrc=WJBOV2FveVQP_M
+*/
 // const menuItems = [
 //   {
 //     key: "Home",

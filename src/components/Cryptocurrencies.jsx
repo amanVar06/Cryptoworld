@@ -32,10 +32,10 @@ const Cryptocurrencies = ({ simplified }) => {
   //try to use another useState of setLoading and loading
   //refernce https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
 
-  useEffect(() => {
+  useEffect(async () => {
     {
       searchTerm === ""
-        ? axios
+        ? await axios
             .request(options)
             .then(function (response) {
               setCryptos(response.data?.data?.coins);
@@ -43,7 +43,7 @@ const Cryptocurrencies = ({ simplified }) => {
             .catch(function (error) {
               console.error(error);
             })
-        : axios
+        : await axios
             .request(options)
             .then(function (response) {
               const filteredData = response.data?.data?.coins.filter((coin) =>
